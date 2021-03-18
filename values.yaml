@@ -1,0 +1,69 @@
+# Default values for conjur-cluster-prep.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+conjur:
+    account: myConjurAccount 
+    applianceUrl: "https://conjur-oss.conjur-oss.svc.cluster.local"
+    ssl:
+        certificate: |-
+            -----BEGIN CERTIFICATE-----
+            MIIDhDCCAmygAwIBAgIRAJwBd+VnZ7C9RqNHFEHtqAcwDQYJKoZIhvcNAQELBQAw
+            GDEWMBQGA1UEAxMNY29uanVyLW9zcy1jYTAeFw0yMTAyMjIxMTQ0MTBaFw0yMjAy
+            MjIxMTQ0MTBaMBsxGTAXBgNVBAMTEGNvbmp1ci5teW9yZy5jb20wggEiMA0GCSqG
+            SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC/7Ss8SBD88HpaQmWZRHXrIBeXMqSWeSSf
+            4MwWqad+/Aog473CAVaWJrbVIe/x3l2JUD5QgS3X4syhMPuDCIUaBsiNICpPkVAj
+            bIJWfuXCqn3ScDStsnkDdRKK3X1HGrojfxcHhxFUqUhKHdJ3oreQvFgrIkbBfbbR
+            2O9Gd5SUUam6feBcwHvVYx9fHq55C6DneyHLxs5HX+3A2Qcm0wHhJxcyHZl4zKR+
+            WDd+bZjIBToMlJUKvZXl0Thu1+1MSuLqMTsq9+4HzaMsfsghAOCu1dJdJekqxUUn
+            uNRkRP82yuS9Ajb+vo3u4ElCPjakF+57bhofNENxkLTuKBXSVAfVAgMBAAGjgcUw
+            gcIwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcD
+            AjAMBgNVHRMBAf8EAjAAMIGCBgNVHREEezB5ghBjb25qdXIubXlvcmcuY29tggpj
+            b25qdXItb3NzghVjb25qdXItb3NzLmNvbmp1ci1vc3OCGWNvbmp1ci1vc3MuY29u
+            anVyLW9zcy5zdmOCJ2Nvbmp1ci1vc3MuY29uanVyLW9zcy5zdmMuY2x1c3Rlci5s
+            b2NhbDANBgkqhkiG9w0BAQsFAAOCAQEAEZZYw4SeDEZaiy+Nma5NlZwQWtWKRRth
+            yF7LJamYwYripGFUCV/8rMlfpTEUiOphkOVK4SpUpXWIsXSEFtYp0MNP8oImO0+z
+            MTmgcCf5F7zFhuCMkJImbsyCQsUd26upTebcrK7R7bV++yMofS2fYC+G8HBKsDpf
+            3+BOSmQLSc8bJngdkDBXLPflZSJ3m/zKVljxW/5HBmexrYLA1dVNmNSDL867GN1q
+            s1ENIh1UT7kIEPr+YebkR9BaxQbyG9DXnktpp5we+9a1HEPWJ6dXCyvf43DXKdWU
+            4fRDZYLUuodUxPdyfltuKCPP6xaUSac+TG1fnr13kVGy1SuTGkJI+w==
+            -----END CERTIFICATE-----
+            -----BEGIN CERTIFICATE-----
+            MIIC/TCCAeWgAwIBAgIRAPL/vb/wn5lCUDdpJ9xcJx4wDQYJKoZIhvcNAQELBQAw
+            GDEWMBQGA1UEAxMNY29uanVyLW9zcy1jYTAeFw0yMTAyMjIxMTQ0MTBaFw0yMjAy
+            MjIxMTQ0MTBaMBgxFjAUBgNVBAMTDWNvbmp1ci1vc3MtY2EwggEiMA0GCSqGSIb3
+            DQEBAQUAA4IBDwAwggEKAoIBAQDbl2oGQ5Whg1pDYQOQ20737tCDAdbYid+J+ubK
+            2FqM3k2MP4NMhFbUa1xNyL9PG4HCPBxI1V3qv6KUt6T2VmRbGkVuNvxvSYxcsjIv
+            glndRAuTLSevb3/+p8D3A0ZVeRylu+UgzFmSJ8xXuWy+mb2suJk6CigYHDFJeRaz
+            oSDYB+XOXQ9V8ib0hJE6QHcYTpbSE1rIwwy1GhsEDYpgTEitNtcceQBfrS2S20nX
+            NGWklnKs3gNMSba4/rZHcvjJAFARxIIVbGHMxKqf2h5vaQPi5Ye9LnrT+ARQAoVP
+            A2Ez7GtHEl/ASx5LFdd+m5eIZgaoYnqa474AHMWfeMgKOpoNAgMBAAGjQjBAMA4G
+            A1UdDwEB/wQEAwICpDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDwYD
+            VR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAto5YDwFGwX7n3ZUsn9Yw
+            Pb13TW+eZpJ1SXsDgFb+tlHxNtfXb2niOf7dlX0vgcy7Necaqd3LvUfXo5ZbD9zZ
+            nyY6DYsZo5rVlr/n8Z9Ie2B/oQz2VYxop88LKnBeOo4OuLgRq/KRxwybiD+fELkT
+            Fsz008xXyqYPD65VRsmN5LcH4I3nmOgC3Hwpd3qkKcJKVZCOC4QmuGLooWGMmoye
+            4CnXaT3hP/yDdGoSQ+Ci/r28yPkRzYyLd+oZe0M86JpVMtQ0HNYyMLFR/gPx16MB
+            62v7weQABGU5rPL8AUj16ewVwG1TO2sguCEZw4E/jeYOa7pMAp70OjjXEntNPXjw
+            sw==
+            -----END CERTIFICATE-----
+
+authnK8s:
+    authenticatorID: my-authenticator-id
+    namespace: conjur-oss
+    rbac:
+        create: true
+        clusterRole: conjur-authenticator-clusterrole
+    serviceAccount:
+        create: true
+        name: conjur-oss
+        labels: ""
+        annotations: ""
+
+displaySamplePolicy: true
+
+authenticators:
+    - authn-k8s
+    - secretless-broker
+    - secrets-provider-init
+

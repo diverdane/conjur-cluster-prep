@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-tests-configmap
+data:
+  run.sh: |-
+    @test "Testing basic connectivity to Conjur" {
+        curl -k "$conjurApplianceUrl:443"
+    }

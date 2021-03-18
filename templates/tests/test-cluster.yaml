@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Release.Name }}-cluster-prep-test
+  labels:
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  initContainers:
+  - name: {{ .Release.Name }}-bats-init
+    image: bats/bats:v1.1
+    command:
+    - "bash"
+    - "-exc"
+    - |
+      # copy bats to tools dir
+      cp -R /opt/bats/libexec/bats-core/ /tools/bats/
+    volumeMounts:
+    - mountPath: /tools
+      name: tools
+  containers:
+  - name: {{ .Release.Name }}-test
+    image: diverdane/conjur-cluster-prep-test:latest
+    workingDir: "/tools/bats"
+    command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+    env:
+    - name: PATH
+      value: "/tools/bats:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    envFrom: 
+    - configMapRef: 
+        name: authn-k8s-config-map
+    volumeMounts:
+    - mountPath: /tests
+      name: tests
+      readOnly: true
+    - mountPath: /tools
+      name: tools
+  volumes:
+  - name: tests
+    configMap:
+      name: {{ .Release.Name }}-tests-configmap
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never

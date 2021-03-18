@@ -1,0 +1,35 @@
+The Conjur/Authenticator Namespace preparation is complete. A
+Golden ConfigMap, authenticator ClusterRole, and authenticator
+ServiceAccount has been deployed.
+
+{{ if .Values.displaySamplePolicy }}
+Here is a sample Conjur security policy that can be used to
+define an authenticator webservice along with an 'users' layer
+that can be used to allow users or applications to authenticate
+with Conjur.
+
+============================= START =======================================
+
+
+{{ $currentScope := .}}
+{{ range $path, $_ :=  .Files.Glob  "**.yaml" }}
+    {{- with $currentScope}}
+        {{- tpl (.Files.Get $path) . | indent 0 }}
+    {{- end }}
+{{ end }}
+
+
+============================ FINISH =======================================
+{{ end }}
+
+{{ if has "authn-k8s" .Values.authenticators }}
+    {{ print "authenticators include authn-k8s" }}
+{{ end }}
+
+{{ if has "secretless-broker" .Values.authenticators }}
+    {{ print "authenticators include secretless-broker" }}
+{{ end }}
+
+{{ if has "secrets-provider-init" .Values.authenticators }}
+    {{ print "authenticators include secrets-provider-init" }}
+{{ end }}

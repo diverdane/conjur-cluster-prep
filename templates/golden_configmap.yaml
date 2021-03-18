@@ -1,0 +1,14 @@
+apiVersion: v1 
+kind: ConfigMap 
+metadata: 
+    name: authn-k8s-config-map 
+data: 
+    # authn-k8s Configuration 
+    authnK8sAuthenticatorID: {{ .Values.authnK8s.authenticatorID }}
+    authnK8sClusterRole: {{ .Values.authnK8s.rbac.clusterRole }}
+    authnK8sNamespace: {{ .Values.authnK8s.namespace }}
+    authnK8sServiceAccount: {{ .Values.authnK8s.serviceAccount.name }}
+ 
+    # Conjur Configuration 
+    conjurAccount: {{ .Values.conjur.account }}
+    conjurApplianceUrl: {{ .Values.conjur.applianceUrl }}
