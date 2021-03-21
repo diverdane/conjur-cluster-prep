@@ -6,26 +6,49 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
-  initContainers:
-  - name: {{ .Release.Name }}-bats-init
-    image: bats/bats:v1.1
-    command:
-    - "bash"
-    - "-exc"
-    - |
-      # copy bats to tools dir
-      cp -R /opt/bats/libexec/bats-core/ /tools/bats/
-    volumeMounts:
-    - mountPath: /tools
-      name: tools
   containers:
+  {{- if .Values.test.includeAuthnSidecar }}
+  - name: authenticator
+    image: cyberark/conjur-authn-k8s-client
+    imagePullPolicy: Always
+    env:
+    - name: CONTAINER_MODE
+      value: sidecar
+    - name: MY_POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: MY_POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    - name: CONJUR_AUTHN_URL
+      value: {{ .Values.conjur.applianceUrl }}/authn-k8s/{{ .Values.authnK8s.authenticatorID }}
+    - name: CONJUR_ACCOUNT
+      value: {{ .Values.conjur.account }}
+    - name: CONJUR_AUTHN_LOGIN
+      value: host/conjur/authn-k8s/{{ .Values.authnK8s.authenticatorID }}/validator
+    - name: CONJUR_SSL_CERTIFICATE
+      valueFrom:
+        configMapKeyRef:
+          name: authn-k8s-config-map
+          key: conjurSslCertificate
+    - name: CONJUR_TOKEN_TIMEOUT
+      value: 10s
+    volumeMounts:
+    - mountPath: /run/conjur
+      name: conjur-access-token
+  {{- end }}
   - name: {{ .Release.Name }}-test
     image: diverdane/conjur-cluster-prep-test:latest
-    workingDir: "/tools/bats"
-    command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
-    env:
-    - name: PATH
-      value: "/tools/bats:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    command: ["/usr/local/bin/bats", "-t", "/tests/run.sh"]
     envFrom: 
     - configMapRef: 
         name: authn-k8s-config-map
@@ -33,12 +56,12 @@ spec:
     - mountPath: /tests
       name: tests
       readOnly: true
-    - mountPath: /tools
-      name: tools
+  serviceAccount: {{ .Values.authnK8s.serviceAccount.name }}
   volumes:
+  - name: conjur-access-token
+    emptyDir:
+      medium: Memory
   - name: tests
     configMap:
       name: {{ .Release.Name }}-tests-configmap
-  - name: tools
-    emptyDir: {}
   restartPolicy: Never

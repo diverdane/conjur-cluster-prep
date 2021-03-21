@@ -2,8 +2,73 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-tests-configmap
+
 data:
   run.sh: |-
-    @test "Testing basic connectivity to Conjur" {
-        curl -k "$conjurApplianceUrl:443"
+    source "./utils.sh"
+
+    @test "Conjur Appliance URL is a reachable address" {
+      status=0
+      cmd=(curl -k --connect-timeout 5 "$conjurApplianceUrl":443)
+      display_info "Running ${cmd[@]}"
+      "${cmd[@]}" || status="$?"
+      if [ "$status" -ne 0 ]; then
+        display_error "Please check configured Conjur Appliance URL.\n" \
+                      "It is not reachable via 'curl -k'"
+      fi
+      [ "$status" -eq 0 ]
+    }
+
+  utils.sh: |-
+    # Color codes for ANSI color escape squences
+    RESET_COLOR=0
+    RED=31
+    GREEN=32
+    NO_COLOR=33
+    BLUE=34
+    MAGENTA=35
+    CYAN=36
+
+    ANNOUNCE_COLOR="$BLUE"
+    ERROR_COLOR="$RED"
+    INFO_COLOR="$GREEN"
+    CODEBLOCK_COLOR="$BLUE"
+
+    function text_color() {
+      color_code="$1"
+      echo -e '\033[0;'"$color_code"'m'
+    }
+
+    function banner() {
+      text_color "$1"
+      echo =====================================================================
+      echo -e "${@:2}"
+      echo =====================================================================
+      text_color "$RESET_COLOR"
+    }
+
+    function indented_banner() {
+      text_color "$1"
+      echo "      --------------------------------------------------------------"
+      echo -e "      ${@:2}"
+      echo "      --------------------------------------------------------------"
+      text_color "$RESET_COLOR"
+    }
+
+    function announce() {
+      banner "$BLUE" "$@"
+    }
+
+    function display_error() {
+      banner "$RED" "$@"
+    }
+
+    function display_info() {
+      text_color "$INFO_COLOR"
+      echo -e "$@"
+      text_color "$RESET_COLOR"
+    }
+
+    function codeblock() {
+      indented_banner "$CODEBLOCK_COLOR" "$@"
     }
