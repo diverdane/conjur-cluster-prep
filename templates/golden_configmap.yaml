@@ -12,4 +12,4 @@ data:
     # Conjur Configuration 
     conjurAccount: {{ .Values.conjur.account }}
     conjurApplianceUrl: {{ .Values.conjur.applianceUrl }}
-    conjurSslCertificate: {{ toYaml .Values.conjur.ssl.certificate | indent 4 }}
+    conjurSslCertificate: {{ .Files.Get .Values.conjur.ssl.certificateFile | quote }}
