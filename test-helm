@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# TODO: Use non-positional command line options.
+# TODO: Make deletion of Helm release at start of script configurable.
+# TODO: Make install of Helm release configurable.
+#
+# Usage:
+#     ./test-helm [<Helm test release> [<Values YAML file>]]
+#
+# Example:
+#     ./test-helm my-test-release my-values.yaml
+
+helm_release="${1:-helm-test-release}"
+values_yaml_file="${2:-helm-test-values.yaml}"
+helm delete "$helm_release"
+sleep 2
+helm install -f "$values_yaml_file" "$helm_release" .
+helm test "$helm_release" --logs
