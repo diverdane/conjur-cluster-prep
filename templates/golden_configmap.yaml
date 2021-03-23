@@ -4,12 +4,18 @@ metadata:
     name: authn-k8s-config-map 
 data: 
     # authn-k8s Configuration 
-    authnK8sAuthenticatorID: {{ .Values.authnK8s.authenticatorID }}
+    authnK8sAuthenticatorID: {{ required "A valid authnK8s.authenticatorID is required!" .Values.authnK8s.authenticatorID }}
     authnK8sClusterRole: {{ .Values.authnK8s.rbac.clusterRole }}
-    authnK8sNamespace: {{ .Values.authnK8s.namespace }}
+    authnK8sNamespace: {{ .Release.Namespace }}
     authnK8sServiceAccount: {{ .Values.authnK8s.serviceAccount.name }}
- 
+
     # Conjur Configuration 
     conjurAccount: {{ .Values.conjur.account }}
-    conjurApplianceUrl: {{ .Values.conjur.applianceUrl }}
+    conjurApplianceUrl: {{ required "A valid conjur.applianceUrl is required!" .Values.conjur.applianceUrl }}
+    {{ if .Values.conjur.ssl.certificateFile }}
     conjurSslCertificate: {{ .Files.Get .Values.conjur.ssl.certificateFile | quote }}
+    conjurSslCertificateBase64: {{ .Files.Get .Values.conjur.ssl.certificateFile | b64enc | quote }}
+    {{ else }}
+    conjurSslCertificate: {{ required "Either conjur.ssl.certificateFile or conjur.ssl.certificateBase64 are required!" .Values.conjur.ssl.certificateBase64 | b64dec | quote }}
+    conjurSslCertificateBase64: {{ .Values.conjur.ssl.certificateBase64 | quote }}
+    {{ end }}

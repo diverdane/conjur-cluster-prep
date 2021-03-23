@@ -3,23 +3,36 @@
 # Declare variables to be passed into your templates.
 
 conjur:
-  account: myConjurAccount 
-  applianceUrl: "https://conjur-oss.conjur-oss.svc.cluster.local"
+  account: default
+
+  # Conjur Appliance URL. (This is a required value).
+  # applianceUrl: "https://conjur-oss.conjur-oss.svc.cluster.local"
+
   ssl:
-    certificateFile: "files/conjur-cert.pem"
+    # Path to a Conjur certificate file. Either this value or
+    # 'certificateBase64' must be provided. If both are provided, then
+    # this value takes precedence over 'certificateBase64'.
+    # certificateFile: "files/conjur-cert.pem"
+
+    # Base64-encoded Conjur certificate file
+    # certificateBase64: <Insert base64-encoded certificate here>
+
 authnK8s:
-  authenticatorID: my-authenticator-id
-  namespace: conjur-oss
+  # Conjur authn-k8s authenticator ID to use for authentication.
+  # (This is a required value).
+  # authenticatorID: my-authenticator-id
+
   rbac:
     create: true
-    clusterRole: conjur-authenticator-clusterrole
+    clusterRole: conjur-authenticator-cr
+
   serviceAccount:
     create: true
-    name: conjur-oss
-    labels: ""
-    annotations: ""
+    name: conjur-authenticator-sa
 
 displaySamplePolicy: false
 
 test:
+  isConjurOss: true
   includeAuthnSidecar: true
+  colorize: true

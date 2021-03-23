@@ -1,4 +1,4 @@
-apiVersion: v2
+apiVersion: v1
 name: conjur-cluster-prep
 description: A Helm chart for Kubernetes
 

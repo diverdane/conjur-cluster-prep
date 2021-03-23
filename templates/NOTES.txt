@@ -21,15 +21,3 @@ with Conjur.
 
 ============================ FINISH =======================================
 {{ end }}
-
-{{ if has "authn-k8s" .Values.authenticators }}
-    {{ print "authenticators include authn-k8s" }}
-{{ end }}
-
-{{ if has "secretless-broker" .Values.authenticators }}
-    {{ print "authenticators include secretless-broker" }}
-{{ end }}
-
-{{ if has "secrets-provider-init" .Values.authenticators }}
-    {{ print "authenticators include secrets-provider-init" }}
-{{ end }}
