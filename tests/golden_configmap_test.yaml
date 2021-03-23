@@ -2,26 +2,123 @@ suite: test golden_configmap
 templates:
   - golden_configmap.yaml
 tests:
-  - it: should use default values when they are not set explicitly
+  #=======================================================================
+  - it: should not create a ConfigMap if not enabled
     set:
-      conjur.applianceUrl: "https://conjur-oss.conjur-oss.svc.cluster.local"
+      authnK8s.configMap.create: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  #=======================================================================
+  - it: should use default values when those values are not set explicitly
+    set:
+      # Set required values
+      conjur.applianceUrl: "https://conjur.example.com"
       conjur.ssl.certificateFile: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
     asserts:
+      # Confirm that a ConfigMap has been created
       - hasDocuments:
           count: 1
       - isKind:
           of: ConfigMap
+
+      # Confirm that configured required values have been used
+      - equal:
+          path: data.authnK8sAuthenticatorID
+          value: "my-authenticator-id"
+      - equal:
+          path: data.conjurApplianceUrl
+          value: "https://conjur.example.com"
+      - matchRegex:
+          path: data.conjurSslCertificate
+          pattern: "^-----BEGIN CERTIFICATE-----[[:space:]]([0-9a-zA-Z/+]+[[:space:]])+"
+      - matchRegex:
+          path: data.conjurSslCertificate
+          pattern: "-----END CERTIFICATE-----[[:space:]]$"
+      - matchRegex:
+          path: data.conjurSslCertificateBase64
+          pattern: "^LS[0-9a-zA-Z=]*JUSUZJQ0FURS0tLS0tCg==$"
+
+      # Confirm that default values have been used
       - equal:
           path: metadata.name
-          value: authn-k8s-config-map
+          value: authn-k8s-configmap
       - equal:
           path: data.authnK8sClusterRole
-          value: conjur-authenticator-cr
+          value: authn-k8s-clusterrole
       - equal:
          path: data.authnK8sNamespace
          value: NAMESPACE
       - equal:
+          path: data.authnK8sServiceAccount
+          value: authn-k8s-serviceaccount
+      - equal:
           path: data.conjurAccount
           value: default
+
+  #=======================================================================
+  - it: should allow Conjur account to be set explicitly
+    set:
+      # Set required values
+      conjur.applianceUrl: "https://conjur.example.com"
+      conjur.ssl.certificateFile: "tests/test-cert.pem"
+      authnK8s.authenticatorID: "my-authenticator-id"
+
+      # Set explicit Conjur account
+      conjur.account: "my-conjur-account"
+
+    asserts:
+      - equal:
+          path: data.conjurAccount
+          value: "my-conjur-account"
+
+  #=======================================================================
+  - it: should allow ConfigMap name to be set explicitly
+    set:
+      # Set required values
+      conjur.applianceUrl: "https://conjur.example.com"
+      conjur.ssl.certificateFile: "tests/test-cert.pem"
+      authnK8s.authenticatorID: "my-authenticator-id"
+
+      # Set explicit Conjur account
+      authnK8s.configMap.name: "my-awesome-configmap"
+
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "my-awesome-configmap"
+
+  #=======================================================================
+  - it: should allow ClusterRole name to be set explicitly
+    set:
+      # Set required values
+      conjur.applianceUrl: "https://conjur.example.com"
+      conjur.ssl.certificateFile: "tests/test-cert.pem"
+      authnK8s.authenticatorID: "my-authenticator-id"
+
+      # Set explicit Conjur account
+      authnK8s.clusterRole.name: "my-awesome-clusterrole"
+
+    asserts:
+      - equal:
+          path: data.authnK8sClusterRole
+          value: "my-awesome-clusterrole"
+
+  #=======================================================================
+  - it: should allow ServiceAccount name to be set explicitly
+    set:
+      # Set required values
+      conjur.applianceUrl: "https://conjur.example.com"
+      conjur.ssl.certificateFile: "tests/test-cert.pem"
+      authnK8s.authenticatorID: "my-authenticator-id"
+
+      # Set explicit Conjur account
+      authnK8s.serviceAccount.name: "my-awesome-serviceaccount"
+
+    asserts:
+      - equal:
+          path: data.authnK8sServiceAccount
+          value: "my-awesome-serviceaccount"

@@ -38,7 +38,7 @@ spec:
     - name: CONJUR_SSL_CERTIFICATE
       valueFrom:
         configMapKeyRef:
-          name: authn-k8s-config-map
+          name: {{ .Values.authnK8s.configMap.name }}
           key: conjurSslCertificate
     - name: CONJUR_TOKEN_TIMEOUT
       value: 10s
@@ -51,7 +51,7 @@ spec:
     command: ["/usr/local/bin/bats", "-t", "/tests/run.sh"]
     envFrom: 
     - configMapRef: 
-        name: authn-k8s-config-map
+        name: {{ .Values.authnK8s.configMap.name }}
     volumeMounts:
     - mountPath: /tests
       name: tests

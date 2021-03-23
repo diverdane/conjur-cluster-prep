@@ -10,8 +10,7 @@ conjur:
 
   ssl:
     # Path to a Conjur certificate file. Either this value or
-    # 'certificateBase64' must be provided. If both are provided, then
-    # this value takes precedence over 'certificateBase64'.
+    # 'certificateBase64' must be provided, but not both.
     # certificateFile: "files/conjur-cert.pem"
 
     # Base64-encoded Conjur certificate file
@@ -22,13 +21,28 @@ authnK8s:
   # (This is a required value).
   # authenticatorID: my-authenticator-id
 
-  rbac:
+  configMap:
     create: true
-    clusterRole: conjur-authenticator-cr
+    name: authn-k8s-configmap
+
+  clusterRole:
+    create: true
+
+    # The name of the authenticator ClusterRole to use or create.
+    #
+    # If 'authnK8s.clusterRole.create` is set to `true`, then this defaults to
+    # "authn-k8s-clusterrole". If 'authnK8s.clusterRole.create` is set to `false`,
+    # then this is a required value.
+    # name: authn-k8s-clusterrole
 
   serviceAccount:
     create: true
-    name: conjur-authenticator-sa
+    # The name of the authenticator ServiceAccount to use or create.
+    #
+    # If 'authnK8s.serviceAccount.create` is set to `true`, then this defaults
+    # to "authn-k8s-serviceaccount". If 'authnK8s.serviceAccount.create` is set
+    # to `false`, then this is a required value.
+    # name: authn-k8s-serviceaccount
 
 displaySamplePolicy: false
 
