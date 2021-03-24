@@ -10,13 +10,17 @@
 # Example:
 #     ./test-helm my-test-release
 
+echo "Cleaning up previous release, if necessary"
 helm_release="${1:-helm-test-release}"
 helm delete "$helm_release"
 sleep 6
+
+echo "Helm installing a new release"
 helm install "$helm_release" . \
      --set conjur.account="myConjurAccount" \
      --set conjur.applianceUrl="https://conjur-oss.conjur-oss.svc.cluster.local" \
-     --set conjur.ssl.certificateFile="files/conjur-cert.pem" \
+     --set conjur.certificateFile="files/conjur-cert.pem" \
      --set authnK8s.authenticatorID="my-authenticator-id"
 
+echo "Running Helm test"
 helm test "$helm_release" --logs

@@ -3,19 +3,18 @@
 # Declare variables to be passed into your templates.
 
 conjur:
-  account: default
+  account: "default"
 
   # Conjur Appliance URL. (This is a required value).
   # applianceUrl: "https://conjur-oss.conjur-oss.svc.cluster.local"
 
-  ssl:
-    # Path to a Conjur certificate file. Either this value or
-    # 'certificateBase64' must be provided, but not both. Example:
-    # certificateFile: "files/conjur-cert.pem"
-    certificateFile:
+  # Path to a Conjur certificate file. Either this value or
+  # 'certificateBase64' must be provided, but not both. Example:
+  # certificateFile: "files/conjur-cert.pem"
+  #certificateFile:
 
-    # Base64-encoded Conjur certificate file
-    certificateBase64:
+  # Base64-encoded Conjur certificate file
+  #certificateBase64:
 
 authnK8s:
   # Conjur authn-k8s authenticator ID to use for authentication.
@@ -24,7 +23,7 @@ authnK8s:
 
   configMap:
     create: true
-    name: authn-k8s-configmap
+    name: "authn-k8s-configmap"
 
   clusterRole:
     create: true

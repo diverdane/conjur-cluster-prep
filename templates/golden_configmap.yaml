@@ -6,26 +6,29 @@ metadata:
 data: 
     # authn-k8s Configuration 
     authnK8sAuthenticatorID: {{ required "A valid authnK8s.authenticatorID is required!" .Values.authnK8s.authenticatorID }}
-    {{ if eq .Values.authnK8s.clusterRole.create true }}
+    {{- if eq .Values.authnK8s.clusterRole.create true }}
     authnK8sClusterRole: {{ .Values.authnK8s.clusterRole.name | default "authn-k8s-clusterrole" }}
-    {{ else }}
+    {{- else }}
     authnK8sClusterRole: {{ required "A valid authnK8s.clusterRole.name is required!" .Values.authnK8s.clusterRole.name }}
-    {{ end }}
+    {{- end }}
     authnK8sNamespace: {{ .Release.Namespace }}
-    {{ if eq .Values.authnK8s.serviceAccount.create true }}
+    {{- if eq .Values.authnK8s.serviceAccount.create true }}
     authnK8sServiceAccount: {{ .Values.authnK8s.serviceAccount.name | default "authn-k8s-serviceaccount" }}
-    {{ else }}
+    {{- else }}
     authnK8sServiceAccount: {{ required "A valid authnK8s.serviceAccount.name is required!" .Values.authnK8s.serviceAccount.name }}
-    {{ end }}
+    {{- end }}
 
     # Conjur Configuration 
     conjurAccount: {{ .Values.conjur.account }}
     conjurApplianceUrl: {{ required "A valid conjur.applianceUrl is required!" .Values.conjur.applianceUrl }}
-    {{ if .Values.conjur.ssl.certificateFile }}
-    conjurSslCertificate: {{ .Files.Get .Values.conjur.ssl.certificateFile | quote }}
-    conjurSslCertificateBase64: {{ .Files.Get .Values.conjur.ssl.certificateFile | b64enc | quote }}
-    {{ else }}
-    conjurSslCertificateBase64: {{ required "Either conjur.ssl.certificateFile or conjur.ssl.certificateBase64 are required!" .Values.conjur.ssl.certificateBase64 | quote }}
-    conjurSslCertificate: {{ .Values.conjur.ssl.certificateBase64 | b64dec | quote }}
-    {{ end }}
-{{ end }}
+    {{- if .Values.conjur.certificateFile }}
+    {{- if .Values.conjur.certificateBase64 }}
+    {{- fail "Only one of 'certificateFile' or 'certificateBase64' may be set!" }}
+    {{- end }}
+    conjurSslCertificate: {{ .Files.Get .Values.conjur.certificateFile | quote }}
+    conjurSslCertificateBase64: {{ .Files.Get .Values.conjur.certificateFile | b64enc | quote }}
+    {{- else }}
+    conjurSslCertificateBase64: {{ required "Either conjur.certificateFile or conjur.certificateBase64 are required!" .Values.conjur.certificateBase64 | quote }}
+    conjurSslCertificate: {{ .Values.conjur.certificateBase64 | b64dec | quote }}
+    {{- end }}
+{{- end }}
