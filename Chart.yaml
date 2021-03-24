@@ -1,6 +1,8 @@
-apiVersion: v1
+apiVersion: v2
 name: conjur-cluster-prep
-description: A Helm chart for Kubernetes
+description: A Helm chart for preparing a Kubernetes cluster to use
+             the Conjur Kubernetes authenticator (authn-k8s)
+icon: https://www.cyberark.com/wp-content/uploads/2015/12/cybr-aim.jpg
 
 # A chart can be either an 'application' or a 'library' chart.
 #

@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Run Helm lint with required values set
+helm lint --set conjur.applianceUrl="https://conjur.example.com" \
+          --set conjur.ssl.certificateFile="tests/test-cert.pem" \
+          --set authnK8s.authenticatorID="my-authenticator-id"
+
 # Run a Helm unit test using the 'helm-unittest' Helm plugin.
 # Reference: https://github.com/quintush/helm-unittest/blob/master/DOCUMENT.md
-
 if [[ ! "$(helm plugin list | awk '/^unittest\t/{print $1}')" ]]; then
     echo "Installing 'helm-unittest' Helm plugin"
     helm plugin install https://github.com/quintush/helm-unittest
 fi
 
-helm unittest .
+helm unittest . --helm3

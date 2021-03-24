@@ -1,8 +1,8 @@
-{{- if .Values.authnK8s.rbac.create }}
+{{- if .Values.authnK8s.clusterRole.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ .Values.authnK8s.rbac.clusterRole }}
+  name: {{ .Values.authnK8s.clusterRole.name | default "authn-k8s-clusterrole" }}
   labels:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

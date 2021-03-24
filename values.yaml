@@ -10,11 +10,12 @@ conjur:
 
   ssl:
     # Path to a Conjur certificate file. Either this value or
-    # 'certificateBase64' must be provided, but not both.
+    # 'certificateBase64' must be provided, but not both. Example:
     # certificateFile: "files/conjur-cert.pem"
+    certificateFile:
 
     # Base64-encoded Conjur certificate file
-    # certificateBase64: <Insert base64-encoded certificate here>
+    certificateBase64:
 
 authnK8s:
   # Conjur authn-k8s authenticator ID to use for authentication.
@@ -32,8 +33,9 @@ authnK8s:
     #
     # If 'authnK8s.clusterRole.create` is set to `true`, then this defaults to
     # "authn-k8s-clusterrole". If 'authnK8s.clusterRole.create` is set to `false`,
-    # then this is a required value.
+    # then this is a required value. Example:
     # name: authn-k8s-clusterrole
+    name:
 
   serviceAccount:
     create: true
@@ -41,8 +43,9 @@ authnK8s:
     #
     # If 'authnK8s.serviceAccount.create` is set to `true`, then this defaults
     # to "authn-k8s-serviceaccount". If 'authnK8s.serviceAccount.create` is set
-    # to `false`, then this is a required value.
+    # to `false`, then this is a required value. Example:
     # name: authn-k8s-serviceaccount
+    name:
 
 displaySamplePolicy: false
 

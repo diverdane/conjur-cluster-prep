@@ -13,6 +13,6 @@
 helm_release="${1:-helm-test-release}"
 values_yaml_file="${2:-helm-test-values.yaml}"
 helm delete "$helm_release"
-sleep 2
+sleep 4
 helm install -f "$values_yaml_file" "$helm_release" .
 helm test "$helm_release" --logs

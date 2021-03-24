@@ -9,13 +9,13 @@ data:
     {{ if eq .Values.authnK8s.clusterRole.create true }}
     authnK8sClusterRole: {{ .Values.authnK8s.clusterRole.name | default "authn-k8s-clusterrole" }}
     {{ else }}
-    authnK8sClusterRole: {{ required "A valid authnK8s.clusterRole.name is required" .Values.authnK8s.clusterRole.name }}
+    authnK8sClusterRole: {{ required "A valid authnK8s.clusterRole.name is required!" .Values.authnK8s.clusterRole.name }}
     {{ end }}
     authnK8sNamespace: {{ .Release.Namespace }}
     {{ if eq .Values.authnK8s.serviceAccount.create true }}
     authnK8sServiceAccount: {{ .Values.authnK8s.serviceAccount.name | default "authn-k8s-serviceaccount" }}
     {{ else }}
-    authnK8sServiceAccount: {{ required "A valid authnK8s.serviceAccount is required" .Values.authnK8s.serviceAccount.name }}
+    authnK8sServiceAccount: {{ required "A valid authnK8s.serviceAccount.name is required!" .Values.authnK8s.serviceAccount.name }}
     {{ end }}
 
     # Conjur Configuration 
