@@ -9,7 +9,7 @@
         "applianceUrl": {
           "type": "string"
         },
-        "certificateFile": {
+        "certificateFilePath": {
           "type": "string",
           "minLength": 1,
           "regex": "(^files\/(.*))|(^tests\/(.*))"

@@ -10,11 +10,11 @@ conjur:
 
   # Path to a Conjur certificate file. Either this value or
   # 'certificateBase64' must be provided, but not both. Example:
-  # certificateFile: "files/conjur-cert.pem"
-  #certificateFile:
+  # certificateFilePath: "files/conjur-cert.pem"
+  # certificateFilePath:
 
   # Base64-encoded Conjur certificate file
-  #certificateBase64:
+  # certificateBase64:
 
 authnK8s:
   # Conjur authn-k8s authenticator ID to use for authentication.

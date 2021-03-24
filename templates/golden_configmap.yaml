@@ -21,14 +21,14 @@ data:
     # Conjur Configuration 
     conjurAccount: {{ .Values.conjur.account }}
     conjurApplianceUrl: {{ required "A valid conjur.applianceUrl is required!" .Values.conjur.applianceUrl }}
-    {{- if .Values.conjur.certificateFile }}
+    {{- if .Values.conjur.certificateFilePath }}
     {{- if .Values.conjur.certificateBase64 }}
-    {{- fail "Only one of 'certificateFile' or 'certificateBase64' may be set!" }}
+    {{- fail "Only one of 'certificateFilePath' or 'certificateBase64' may be set!" }}
     {{- end }}
-    conjurSslCertificate: {{ .Files.Get .Values.conjur.certificateFile | quote }}
-    conjurSslCertificateBase64: {{ .Files.Get .Values.conjur.certificateFile | b64enc | quote }}
+    conjurSslCertificate: {{ .Files.Get .Values.conjur.certificateFilePath | quote }}
+    conjurSslCertificateBase64: {{ .Files.Get .Values.conjur.certificateFilePath | b64enc | quote }}
     {{- else }}
-    conjurSslCertificateBase64: {{ required "Either conjur.certificateFile or conjur.certificateBase64 are required!" .Values.conjur.certificateBase64 | quote }}
+    conjurSslCertificateBase64: {{ required "Either conjur.certificateFilePath or conjur.certificateBase64 are required!" .Values.conjur.certificateBase64 | quote }}
     conjurSslCertificate: {{ .Values.conjur.certificateBase64 | b64dec | quote }}
     {{- end }}
 {{- end }}

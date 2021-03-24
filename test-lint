@@ -5,7 +5,7 @@
 # Run Helm lint with a Conjur certificate file
 helm lint \
     --set conjur.applianceUrl="https://conjur.example.com" \
-    --set conjur.certificateFile="tests/test-cert.pem" \
+    --set conjur.certificateFilePath="tests/test-cert.pem" \
     --set authnK8s.authenticatorID="my-authenticator-id"
 
 # Run Helm lint with a base64-encoded Conjur certificate

@@ -17,7 +17,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
     asserts:
@@ -67,7 +67,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
       # Set explicit Conjur account
@@ -84,7 +84,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
       # Set explicit Conjur account
@@ -101,7 +101,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
       # Set explicit Conjur account
@@ -118,7 +118,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
       # Set explicit Conjur account
@@ -156,7 +156,7 @@ tests:
   #=======================================================================
     set:
       # Set required values
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
     asserts:
@@ -174,7 +174,7 @@ tests:
 
     asserts:
       - failedTemplate:
-          errorMessage: "Either conjur.certificateFile or conjur.certificateBase64 are required!"
+          errorMessage: "Either conjur.certificateFilePath or conjur.certificateBase64 are required!"
 
   #=======================================================================
   - it: should fail if both Conjur certificate file path and
@@ -183,13 +183,13 @@ tests:
     set:
       # Set required values, including mutually exclusive certificate settings
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       conjur.certificateBase64: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvVENDQWVXZ0F3SUJBZ0lSQUpOMk11Vmx0alpMWmVyRk50YklZend3RFFZSktvWklodmNOQVFFTEJRQXcKR0RFV01CUUdBMVVFQXhNTlkyOXVhblZ5TFc5emN5MWpZVEFlRncweU1UQXpNakF4TlRRNU1UTmFGdzB5TWpBegpNakF4TlRRNU1UTmFNQmd4RmpBVUJnTlZCQU1URFdOdmJtcDFjaTF2YzNNdFkyRXdnZ0VpTUEwR0NTcUdTSWIzCkRRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRQ3Z6cWVMTmZSRUM1OEdwcEZYNmtlbWUzYUNSdDlJRlRPOGhZR0IKVU5xQVJTb3hrNlJobC9nQ1ZZSVdRMHF3bEFzR0lOR2x3Wmw1ZS9YSlRGU2lQRUZqd05wZStDTHdCUThuWi9CRwpscVVvYnozb1ZiUkdaTEV0L3ZlYkVJTVNYTklhSGRyWThWY0pnR2VoazBGczhaQ1RodC9UcGc5My96MHkydnJqCnpXR2hLek9lK3NrRFFISU5IbGk2YWo2MUdQa1VIVFljYlVDcnZua2JnYXRON0w2VjJrbVFaejMzOFp5aUVsSHgKU3o0VkdmdnhBYXJkY2U0eTF0a1FzRThDNERFMjNVSFEyNVVtU0dnWCtjL0grNkludklvZzZoY25hOWFzRytOUQorL1NRenRDUFRidEx4YjFzd3ZjYnN0WnV2VXlwNUlha3hKZnpSV25YTkJYUk9WdlJBZ01CQUFHalFqQkFNQTRHCkExVWREd0VCL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WUQKVlIwVEFRSC9CQVV3QXdFQi96QU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFHRGFaRHpkaVZCMi82Unluc2NRUQpsanRkQmJwV1BFYlNwT1dNWGRndmVUSHhzU0pLQk5yR3YzQnpPZjViSkxVdVp1eGJ2ZjFJZjJvam91c2JIR3VJCkJHdTBZc2lCcGYrNUx4Vjd4dTJ3NWdiSXpWZnJZUUtDU3lKU052d0NwKzBHNXFocTlqRlFFY2xsd05yK1lrUkkKY212WUN6b2lNRFlZNkNzblM3SHc4OGZSOTZhaWFndnRRVXB5YXNMdWVscnpUc05VTlU1b2I3SktMeE1oMExwego1WnRyZWw1M0kxQzFXeEtIZTN0UlRBU2UxVEdzZW9aazhHS1A3OC96L0JwS05SUllGVmJkVkJldk5uYlJjZFlICncxYzFvdEN4UEF6ZXNrRitYR0JCem9yNWdkVyt3KzB4SG9aejVVSTJpQ1B4aGp6d1BjQXJWQ1F3V0xLd3NDK04KZ3c9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
       authnK8s.authenticatorID: "my-authenticator-id"
 
     asserts:
       - failedTemplate:
-          errorMessage: "Only one of 'certificateFile' or 'certificateBase64' may be set!"
+          errorMessage: "Only one of 'certificateFilePath' or 'certificateBase64' may be set!"
 
   #=======================================================================
   - it: should fail if authenticator ID is not set
@@ -197,7 +197,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
 
     asserts:
       - failedTemplate:
@@ -210,7 +210,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
       # Disable ClusterRole creation, but don't set ClusterRole name
@@ -227,7 +227,7 @@ tests:
     set:
       # Set required values
       conjur.applianceUrl: "https://conjur.example.com"
-      conjur.certificateFile: "tests/test-cert.pem"
+      conjur.certificateFilePath: "tests/test-cert.pem"
       authnK8s.authenticatorID: "my-authenticator-id"
 
       # Disable ClusterRole creation, but don't set ClusterRole name
