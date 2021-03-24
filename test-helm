@@ -1,18 +1,22 @@
 #!/bin/bash
 
-# TODO: Use non-positional command line options.
 # TODO: Make deletion of Helm release at start of script configurable.
-# TODO: Make install of Helm release configurable.
+# TODO: Use environment variables for chart settings so that we can
+#       use Summon to set these values in CI.
 #
 # Usage:
-#     ./test-helm [<Helm test release> [<Values YAML file>]]
+#     ./test-helm [<Helm test release>]
 #
 # Example:
-#     ./test-helm my-test-release my-values.yaml
+#     ./test-helm my-test-release
 
 helm_release="${1:-helm-test-release}"
-values_yaml_file="${2:-helm-test-values.yaml}"
 helm delete "$helm_release"
-sleep 4
-helm install -f "$values_yaml_file" "$helm_release" .
+sleep 6
+helm install "$helm_release" . \
+     --set conjur.account="myConjurAccount" \
+     --set conjur.applianceUrl="https://conjur-oss.conjur-oss.svc.cluster.local" \
+     --set conjur.ssl.certificateFile="files/conjur-cert.pem" \
+     --set authnK8s.authenticatorID="my-authenticator-id"
+
 helm test "$helm_release" --logs
