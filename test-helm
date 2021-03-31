@@ -20,6 +20,7 @@ helm install "$helm_release" . \
      --set conjur.account="myConjurAccount" \
      --set conjur.applianceUrl="https://conjur-oss.conjur-oss.svc.cluster.local" \
      --set conjur.certificateFilePath="files/conjur-cert.pem" \
+     --set authnK8s.serviceAccount.name="NameWithUpperCase" \
      --set authnK8s.authenticatorID="my-authenticator-id"
 
 echo "Running Helm test"

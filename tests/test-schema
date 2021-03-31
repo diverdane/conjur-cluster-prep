@@ -1,0 +1,168 @@
+#!/bin/bash
+
+# This script tests the regular expression pattern matching capabilities
+# of the 'values.schema.json' file.
+#
+# Requirements:
+#   - Bash v4 or later
+#   - Helm v3.5.3 or later
+
+cd "$(dirname "$0")"
+
+source ./utils.sh
+
+# Default required settings
+conjur_url_setting="conjur.applianceUrl=https://conjur.example.com"
+conjur_cert_file_setting="conjur.certificateFilePath=test-cert.pem"
+authenticator_id_setting="authnK8s.authenticatorID=my-authenticator-id"
+
+readonly expect_failure=true
+
+num_passed=0
+num_failed=0
+test_failed=false
+
+function conjur_url_test() {
+    helm lint .. --strict \
+        --set "conjur.applianceUrl=$1" \
+        --set "$conjur_cert_file_setting" \
+        --set "$authenticator_id_setting"
+}
+
+function cert_base64_test() {
+    helm lint .. --strict \
+        --set "$conjur_url_setting" \
+        --set "conjur.certificateBase64=$1" \
+        --set "$authenticator_id_setting"
+}
+
+function serviceaccount_name_test() {
+    helm lint .. --strict \
+        --set "$conjur_url_setting" \
+        --set "$conjur_cert_file_setting" \
+        --set "$authenticator_id_setting" \
+        --set "authnK8s.serviceAccount.name=$1"
+}
+
+function clusterrole_name_test() {
+    helm lint .. --strict \
+        --set "$conjur_url_setting" \
+        --set "$conjur_cert_file_setting" \
+        --set "$authenticator_id_setting" \
+        --set "authnK8s.clusterrole.name=$1"
+}
+
+function invert_exit_status() {
+    exit_status="$1"
+    if [ "$exit_status" -ne 0 ]; then
+        echo 0
+    else
+        echo 1
+    fi
+}
+
+function update_results() {
+    exit_status="$1"
+    failure_expected="${2:-false}"
+    if [ "$failure_expected" = true ]; then
+        echo "FAILURE EXPECTED"
+        exit_status="$(invert_exit_status $exit_status)"
+    fi
+    if [ "$exit_status" -eq 0 ]; then
+        echo "Test Case PASSED!"
+        let "num_passed=num_passed+1"
+    else
+        color_text "$RED" "Test Case FAILED!"
+        let "num_failed=num_failed+1"
+        test_failed=true
+    fi
+}
+
+announce "Appliance URL that begins with 'https://' is accepted"
+conjur_url_test "https://"
+update_results "$?" 
+
+announce "Appliance URL that begins with "HTTPS://" is accepted"
+conjur_url_test "https://"
+update_results "$?" 
+
+announce "Appliance URL that is an internal Kubernetes address is accepted"
+conjur_url_test "https://conjur.conjur-namespace.svc.cluster.local"
+update_results "$?" 
+
+announce "Appliance URL that is an IPv4 address is accepted"
+conjur_url_test "https://192.0.2.1:443"
+update_results "$?" 
+
+announce "Appliance URL that is an IPv6 address is accepted"
+conjur_url_test "https://[2001:DB8::1]:443"
+update_results "$?" 
+
+announce "Appliance URL that has an endpoint is accepted"
+conjur_url_test "https://conjur.example.com/som-endpoint"
+update_results "$?" 
+
+announce "Appliance URL that uses HTTP is rejected"
+conjur_url_test "http://conjur.example.com"
+update_results "$?" "$expect_failure"
+
+announce "Appliance URL that contains underscores is rejected"
+conjur_url_test "http://hostname_with_userscores"
+update_results "$?" "$expect_failure"
+
+announce "Base64-encoded Conjur cert with all valid characters is accepted"
+cert_base64_test "LS0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=="
+update_results "$?"
+
+announce "Base64-encoded Conjur cert containing a comma is rejected"
+cert_base64_test "LS0abcd,ABCD0123/=="
+update_results "$?" "$expect_failure"
+
+announce "Base64-encoded Conjur cert containing a space is rejected"
+cert_base64_test "LS0abcd ABCD0123/=="
+update_results "$?" "$expect_failure"
+
+announce "ServiceAccount name with dotted name is accepted"
+serviceaccount_name_test "dotted.serviceaccount.name"
+update_results "$?"
+
+announce "ServiceAccount name with upper case characters is rejected"
+serviceaccount_name_test "NameWithUpperCase"
+update_results "$?" "$expect_failure"
+
+# TODO: Figure out why max length seems to be 252 and not 253
+announce "ServiceAccount name with less than 253 characters is accepted"
+serviceaccount_name_test "name-with-253-chars----------30--------40--------50--------60--------70--------80--------90--------100-------110-------120--------130-------140-------150-------160-------170-------180-------190-------200-------210-------220-------230-------240-------250"
+update_results "$?"
+
+announce "ServiceAccount name longer than 253 characters is rejected"
+serviceaccount_name_test "name-with-more-than-253-chars----------40--------50--------60--------70--------80--------90--------100-------110-------120--------130-------140-------150-------160-------170-------180-------190-------200-------210-------220-------230-------240-------25034"
+update_results "$?" "$expect_failure"
+
+announce "ClusterRole name with dashes is accepted"
+clusterrole_name_test "name-with-dashes"
+update_results "$?"
+
+announce "ClusterRole name ending with dash is rejected"
+clusterrole_name_test "name-ending-with-dash-"
+update_results "$?" "$expect_failure"
+
+announce "ClusterRole name ending with dash is rejected"
+serviceaccount_name_test "name-ending-with-dash-"
+update_results "$?" "$expect_failure"
+
+announce "ClusterRole name with underscores is rejected"
+serviceaccount_name_test "name_with_underscores"
+update_results "$?" "$expect_failure"
+
+if [ "$num_failed" -eq 0 ]; then
+    result_text="Test PASSED!"
+    result_color="$GREEN"
+else
+    result_text="Test FAILED!"
+    result_color="$RED"
+fi
+banner "$result_color" \
+    "$result_text\n" \
+    "   Passed test cases: $num_passed" \
+    "   Failed test cases: $num_failed"
